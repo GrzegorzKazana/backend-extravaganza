@@ -1,3 +1,5 @@
+import { ErrorRequestHandler } from 'express';
+
 type ServerErrorDTO = { status: 'error'; statusCode: number; message: string } & Record<
     string,
     // eslint-disable-next-line
@@ -30,3 +32,12 @@ export class PayloadGuardError extends ServerError {
         };
     }
 }
+
+export const serverErrorMiddleware: ErrorRequestHandler = (err, req, res, next) => {
+    if (err instanceof ServerError) {
+        res.status(err.statusCode);
+        res.json(err.toJson());
+    } else {
+        next(err);
+    }
+};
