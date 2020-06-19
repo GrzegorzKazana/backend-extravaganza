@@ -1,6 +1,12 @@
 import type { Repository } from '../types';
 
-export type BookGenre = 'Science Fiction' | 'Novel' | 'Horror';
+export const BookGenres = {
+    scifi: 'Science Fiction',
+    novel: 'Novel',
+    horror: 'Horror',
+} as const;
+
+export type BookGenre = typeof BookGenres[keyof typeof BookGenres];
 
 export interface Book {
     title: string;
@@ -10,6 +16,6 @@ export interface Book {
 
 export interface BookRepository extends Repository<Book> {
     getBooksByAuthor(authorId: string): Promise<Book[]>;
-    getBooks(from: number, to: number): Promise<Book[]>;
+    getBooks(from?: number, count?: number): Promise<Book[]>;
     getBooksByGenre(genre: BookGenre): Promise<Book[]>;
 }
