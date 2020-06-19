@@ -49,7 +49,7 @@ export function ignoreRouteIfPayloadIsNotMatching(
                 // see the `deferToNext` feature of express Router
                 // https://expressjs.com/en/guide/using-middleware.html#middleware.router
                 // eslint-disable-next-line
-                next('router' as any);
+                next('route' as any);
             }
         },
     );

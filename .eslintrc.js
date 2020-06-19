@@ -26,6 +26,6 @@ module.exports = {
             { argsIgnorePattern: '^_+', varsIgnorePattern: '^_+' },
         ],
         '@typescript-eslint/no-use-before-define': ['error', { functions: false }],
-        '@typescript-eslint/explicit-function-return-type': ['warn', { allowExpressions: true }],
+        '@typescript-eslint/explicit-function-return-type': ['off', { allowExpressions: true }],
     },
 };

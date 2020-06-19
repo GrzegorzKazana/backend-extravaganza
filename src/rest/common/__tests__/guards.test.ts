@@ -57,7 +57,7 @@ describe('payload route middleware', () => {
         const guard = ignoreRouteIfPayloadIsNotMatching(validators);
 
         const mockNext = (err?: Error | string): void => {
-            expect(err).toBe('router');
+            expect(err).toBe('route');
             done();
         };
 

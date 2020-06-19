@@ -29,9 +29,9 @@ export default function createAuthorController(
                 .then(authors => res.json({ authors }))
                 .catch(next),
 
-        postAuthor: ({ body: author }, res, next) =>
+        postAuthor: ({ body: { name, surname, dateOfBirth } }, res, next) =>
             authorRepository
-                .save(author)
+                .save({ name, surname, dateOfBirth })
                 .then(author => res.json({ author }))
                 .catch(next),
 
