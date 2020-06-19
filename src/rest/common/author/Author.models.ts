@@ -1,4 +1,4 @@
-import type { Repository } from './types';
+import type { Repository } from '../types';
 
 export interface Author {
     name: string;
@@ -7,5 +7,6 @@ export interface Author {
 }
 
 export interface AuthorRepository extends Repository<Author> {
-    getAuthorsFromYear(year: number): Promise<Author>;
+    getAllAuthors(): Promise<Author[]>;
+    getAuthorsFromYear(year: number): Promise<Author[]>;
 }

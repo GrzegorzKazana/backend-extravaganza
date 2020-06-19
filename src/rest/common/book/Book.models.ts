@@ -1,4 +1,4 @@
-import type { Repository } from './types';
+import type { Repository } from '../types';
 
 export type BookGenre = 'Science Fiction' | 'Novel' | 'Horror';
 
