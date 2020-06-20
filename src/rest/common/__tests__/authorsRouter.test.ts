@@ -78,4 +78,21 @@ describe('authors endpoint router', () => {
             }),
         );
     });
+
+    it('allows for updating author data', async () => {
+        const { app, repo } = getApp();
+
+        const authorId = 'asd';
+
+        await request(app).patch(`/${authorId}`).send({ surname: 'c' });
+
+        expect(repo.update).toBeCalledTimes(1);
+        expect(repo.update).toHaveBeenNthCalledWith(
+            1,
+            authorId,
+            expect.objectContaining({
+                surname: 'c',
+            }),
+        );
+    });
 });

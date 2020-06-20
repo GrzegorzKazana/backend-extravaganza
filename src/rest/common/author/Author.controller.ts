@@ -1,16 +1,17 @@
 import type { RouteHandler } from '../types';
-import type { AuthorRepository, Author } from './Author.models';
+import type { AuthorRepository, Author, AuthorProps } from './Author.models';
 
 export interface AuthorController {
     getAuthor: RouteHandler<{ author: Author }, unknown, { authorId: string }>;
     getAllAuthors: RouteHandler<{ authors: Author[] }>;
-    postAuthor: RouteHandler<{ author: Author }, Author>;
+    postAuthor: RouteHandler<{ author: AuthorProps }, Author>;
     queryUsersByYear: RouteHandler<
         { authors: Author[] },
         unknown,
         Record<string, string>,
         { year: number }
     >;
+    updateAuthor: RouteHandler<{ author: Author }, Partial<AuthorProps>, { authorId: string }>;
 }
 
 export default function createAuthorController(
@@ -39,6 +40,12 @@ export default function createAuthorController(
             authorRepository
                 .getAuthorsFromYear(year)
                 .then(authors => res.json({ authors }))
+                .catch(next),
+
+        updateAuthor: ({ params: { authorId }, body: authorData }, res, next) =>
+            authorRepository
+                .update(authorId, authorData)
+                .then(author => res.json({ author }))
                 .catch(next),
     };
 }
