@@ -1,12 +1,16 @@
 import type { Repository } from '../types';
 
-export interface Author {
+export interface AuthorProps {
     name: string;
     surname: string;
     dateOfBirth: Date;
 }
 
-export interface AuthorRepository extends Repository<Author> {
+export interface Author extends AuthorProps {
+    id: string;
+}
+
+export interface AuthorRepository extends Repository<AuthorProps, Author> {
     getAllAuthors(): Promise<Author[]>;
     getAuthorsFromYear(year: number): Promise<Author[]>;
 }

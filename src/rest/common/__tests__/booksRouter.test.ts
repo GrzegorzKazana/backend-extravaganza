@@ -16,6 +16,7 @@ describe('book endpoint router', () => {
         exists: jest.fn(),
         save: jest.fn(),
         delete: jest.fn(),
+        update: jest.fn(),
         getBooks: jest.fn(),
         getBooksByAuthor: jest.fn(),
         getBooksByGenre: jest.fn(),

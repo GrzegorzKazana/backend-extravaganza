@@ -11,9 +11,10 @@ export type RouteHandler<
     next: NextFunction,
 ) => void;
 
-export interface Repository<T, Id = string> {
-    getById(id: Id): Promise<T>;
-    exists(dto: T): Promise<boolean>;
-    save(dto: T): Promise<T>;
-    delete(id: Id): Promise<T>;
+export interface Repository<T, O = T, Id = string> {
+    getById(id: Id): Promise<O>;
+    exists(id: Id): Promise<boolean>;
+    save(dto: T): Promise<O>;
+    delete(id: Id): Promise<O>;
+    update(id: Id, dto: Partial<T>): Promise<O>;
 }

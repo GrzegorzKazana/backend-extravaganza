@@ -16,6 +16,7 @@ describe('authors endpoint router', () => {
         exists: jest.fn(),
         save: jest.fn(),
         delete: jest.fn(),
+        update: jest.fn(),
         getAllAuthors: jest.fn(),
         getAuthorsFromYear: jest.fn(),
     });
