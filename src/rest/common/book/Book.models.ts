@@ -4,6 +4,7 @@ export const BookGenres = {
     scifi: 'Science Fiction',
     novel: 'Novel',
     horror: 'Horror',
+    fantasy: 'Fantasy',
 } as const;
 
 export type BookGenre = typeof BookGenres[keyof typeof BookGenres];
