@@ -11,7 +11,6 @@ import createAuthorController from '../author/Author.controller';
     @typescript-eslint/no-unsafe-assignment: 0 */
 
 describe('authors endpoint router', () => {
-    // eslint-disable-next-line
     const getMockRepository = (): AuthorRepository => ({
         getById: jest.fn(),
         exists: jest.fn(),

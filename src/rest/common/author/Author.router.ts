@@ -1,6 +1,6 @@
 import type { AuthorController } from './Author.controller';
 
-import { Router, NextFunction } from 'express';
+import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 
 import { createPayloadGuards, createRouteIgnore } from '../guards';

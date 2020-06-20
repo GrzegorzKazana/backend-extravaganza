@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult, ValidationChain } from 'express-validator';
+import { contextsKey, InternalRequest } from 'express-validator/src/base';
 import { compose, Next, RequestHandler } from 'compose-middleware';
 
 import { head, mapObj } from './utils';
@@ -46,6 +47,10 @@ export function ignoreRouteIfPayloadIsNotMatching(
             if (errors.isEmpty()) {
                 next();
             } else {
+                // clear validation context, otherwise subsequent validators
+                // will always fail due to current error
+                // https://github.com/express-validator/express-validator/issues/888
+                clearRequestValidationContext(req);
                 // see the `deferToNext` feature of express Router
                 // https://expressjs.com/en/guide/using-middleware.html#middleware.router
                 // eslint-disable-next-line
@@ -53,4 +58,8 @@ export function ignoreRouteIfPayloadIsNotMatching(
             }
         },
     );
+}
+
+function clearRequestValidationContext(req: Request): void {
+    delete (req as InternalRequest)[contextsKey];
 }
