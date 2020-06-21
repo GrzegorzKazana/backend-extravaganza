@@ -14,3 +14,6 @@ export const mapObj = <I, O>(fn: (a: I) => O) => <K extends string>(
 ): Record<K, O> => fromEntries(entries(obj).map(mapSecond(fn)));
 
 export const head = <T>(arr: T[]): T | undefined => arr[0];
+
+export const isPaginationValid = (from: number, to: number): boolean =>
+    from >= 0 && to >= 0 && to > from;

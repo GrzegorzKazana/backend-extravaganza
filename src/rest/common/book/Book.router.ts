@@ -4,7 +4,7 @@ import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 
 import { createPayloadGuards, createRouteIgnore } from '../guards';
-import { BookGenres } from './Book.models';
+import { BookGenres, BookGenreRegex } from './Book.models';
 
 const validators = createPayloadGuards({
     getBookById: [param('bookId').isString()],
@@ -17,7 +17,7 @@ const validators = createPayloadGuards({
 
 const ignore = createRouteIgnore({
     ifNoAuthorQuery: [query('authorId').isString()],
-    ifNoGenreQuery: [query('genre').isIn(Object.values(BookGenres))],
+    ifNoGenreQuery: [query('genre').matches(BookGenreRegex)],
     ifNoPaginationQuery: [query('from').isInt().toInt(), query('count').isInt().toInt()],
 });
 

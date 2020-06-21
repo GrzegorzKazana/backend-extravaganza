@@ -7,6 +7,8 @@ export const BookGenres = {
     fantasy: 'Fantasy',
 } as const;
 
+export const BookGenreRegex = new RegExp(`${Object.values(BookGenres).join('|')}`, 'i');
+
 export type BookGenre = typeof BookGenres[keyof typeof BookGenres];
 
 export interface BookProps {

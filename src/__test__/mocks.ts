@@ -1,5 +1,5 @@
-import type { BookProps, Book } from '../rest/common/book/Book.models';
-import type { AuthorProps, Author } from '../rest/common/author/Author.models';
+import type { BookProps } from '../rest/common/book/Book.models';
+import type { AuthorProps } from '../rest/common/author/Author.models';
 
 export const mockBooksByAuthor: Record<string, BookProps[]> = {
     Lee: [{ title: 'To Kill a Mockingbird', author: '', genre: 'Novel' }],

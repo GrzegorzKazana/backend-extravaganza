@@ -8,6 +8,7 @@ import type {
 import { v4 as uuid } from 'uuid';
 
 import { ServerError } from '../common/errors';
+import { isPaginationValid } from '../common/utils';
 
 export default class BookRepository implements IBookRepository {
     private books: Map<string, Book> = new Map<string, Book>();
@@ -66,12 +67,14 @@ export default class BookRepository implements IBookRepository {
         const startIdx = from ?? 0;
         const endIdx = startIdx + (count ?? books.length);
 
-        return Promise.resolve(books.slice(startIdx, endIdx));
+        return isPaginationValid(startIdx, endIdx)
+            ? Promise.resolve(books.slice(startIdx, endIdx))
+            : Promise.resolve([]);
     }
 
     public getBooksByGenre(genre: BookGenre): Promise<Book[]> {
         const books = [...this.books.values()];
-        const booksInGenre = books.filter(book => book.genre === genre);
+        const booksInGenre = books.filter(book => book.genre.toLowerCase() === genre.toLowerCase());
 
         return Promise.resolve(booksInGenre);
     }
