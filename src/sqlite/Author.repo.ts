@@ -14,13 +14,15 @@ import { ServerError } from '../common/errors';
 export default class AuthorRepository implements IAuthorRepository {
     constructor(private db: Database) {}
 
-    public async init(): Promise<void> {
+    public async init(): Promise<AuthorRepository> {
         await this.db.exec(SQL`CREATE TABLE Authors (
             id TEXT NOT NULL PRIMARY KEY,
             name TEXT NOT NULL,
             surname TEXT NOT NULL,
-            dateOfBirth int NOT NULL,
+            dateOfBirth int NOT NULL
         )`);
+
+        return this;
     }
 
     public async getById(authorId: string): Promise<Author> {

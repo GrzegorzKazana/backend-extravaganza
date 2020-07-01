@@ -10,11 +10,12 @@ import { v4 as uuid } from 'uuid';
 import SQL from 'sql-template-strings';
 
 import { ServerError } from '../common/errors';
+import { isNil } from '../common/utils';
 
 export default class BookRepository implements IBookRepository {
     constructor(private db: Database) {}
 
-    public async init(): Promise<void> {
+    public async init(): Promise<BookRepository> {
         await this.db.exec(SQL`CREATE TABLE Books (
             id TEXT NOT NULL PRIMARY KEY,
             title TEXT NOT NULL,
@@ -22,6 +23,8 @@ export default class BookRepository implements IBookRepository {
             author TEXT NOT NULL,
             FOREIGN KEY (author) REFERENCES Authors (id)
         )`);
+
+        return this;
     }
 
     public async getById(bookId: string): Promise<Book> {
@@ -82,8 +85,15 @@ export default class BookRepository implements IBookRepository {
         return this.db.all<Book[]>(SQL`SELECT * FROM Books WHERE author = ${authorId}`);
     }
 
-    public getBooks(from?: number, count?: number): Promise<Book[]> {
-        return this.db.all<Book[]>(SQL`SELECT * FROM Books LIMIT ${count} OFFSET ${from}`);
+    public async getBooks(from?: number, count?: number): Promise<Book[]> {
+        const isUsingPagination = !isNil(from) && !isNil(count);
+        const isPaginationInvalid = count && count < 1;
+
+        return !isUsingPagination
+            ? this.db.all<Book[]>(SQL`SELECT * FROM Books`)
+            : isPaginationInvalid
+            ? []
+            : this.db.all<Book[]>(SQL`SELECT * FROM Books LIMIT ${count} OFFSET ${from}`);
     }
 
     public getBooksByGenre(genre: BookGenre): Promise<Book[]> {
