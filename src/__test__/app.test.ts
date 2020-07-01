@@ -1,5 +1,5 @@
-import type { Author } from '../rest/common/author/Author.models';
-import type { Book, BookProps } from '../rest/common/book/Book.models';
+import type { Author } from '../common/author/Author.models';
+import type { Book, BookProps } from '../common/book/Book.models';
 
 import request from 'supertest';
 import { Express } from 'express';

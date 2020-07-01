@@ -3,15 +3,15 @@ import type { Server } from 'http';
 import express, { Router } from 'express';
 import bodyParser from 'body-parser';
 
-import { serverErrorMiddleware } from './rest/common/errors';
+import { serverErrorMiddleware } from './common/errors';
 
-import createAuthorRouter from './rest/common/author/Author.router';
-import createAuthorController from './rest/common/author/Author.controller';
+import createAuthorRouter from './common/author/Author.router';
+import createAuthorController from './common/author/Author.controller';
 
-import createBookRouter from './rest/common/book/Book.router';
-import createBookController from './rest/common/book/Book.controller';
+import createBookRouter from './common/book/Book.router';
+import createBookController from './common/book/Book.controller';
 
-import * as InMem from './rest/inmemory';
+import * as InMem from './inmemory';
 
 export default class App {
     public app = express();
