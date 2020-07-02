@@ -48,7 +48,7 @@ export default class BookRepository implements IBookRepository {
     }
 
     public async delete(bookId: string): Promise<Book> {
-        const book = await this.Books().delete().where('id', bookId).returning('*').first();
+        const book = await this.Books().where('id', bookId).delete().returning('*').first();
 
         if (!book) throw new ServerError('Book not found', 404);
 
