@@ -23,6 +23,9 @@ import { AuthorRepository } from './common/author/Author.models';
 export default class App {
     public app = express();
 
+    // required for proper teardown, e.g. in tests
+    private teardownCallbacks: Array<() => Promise<void>> = [];
+
     constructor(private port: number = 400) {}
 
     public async init(): Promise<App> {
@@ -39,9 +42,15 @@ export default class App {
         return new Promise(resolve => this.app.listen(this.port, resolve));
     }
 
+    public teardown(): Promise<void[]> {
+        return Promise.all(this.teardownCallbacks.map(cb => cb()));
+    }
+
     private async createRepositories() {
         const db = await initDb();
         const knex = Knx.initKnex();
+
+        this.teardownCallbacks.push(() => knex.destroy());
 
         return {
             inmem: { book: new InMem.BookRepo(), author: new InMem.AuthorRepo() },

@@ -14,7 +14,15 @@ import { mockAuthor, mockBooksByAuthor, mockBooks } from './mocks';
 
 describe('app functionality', () => {
     const repos = ['inmemory', 'sqlite', 'knex'];
-    const getApp = () => new App().init().then(({ app }) => app);
+
+    let server = new App();
+
+    beforeEach(() =>
+        new App().init().then(app => {
+            server = app;
+        }),
+    );
+    afterEach(() => server.teardown());
 
     repos.forEach(repo => {
         describe(`with '${repo}' used as repository`, () => {
@@ -59,7 +67,7 @@ describe('app functionality', () => {
 
             describe('in author module', () => {
                 it('allows for data insertion', async () => {
-                    const app = await getApp();
+                    const { app } = server;
                     await insertAuthors(app);
 
                     const res = await request(app).get(`/${repo}/author`);
@@ -80,7 +88,7 @@ describe('app functionality', () => {
                 });
 
                 it('allows for getting author by id', async () => {
-                    const app = await getApp();
+                    const { app } = server;
                     const [insertedAuthor] = await insertAuthors(app);
 
                     const { author } = await request(app)
@@ -98,10 +106,10 @@ describe('app functionality', () => {
                 });
 
                 it('return 404 if author with id does not exist', () =>
-                    getApp().then(app => request(app).get(`/${repo}/author/asd`).expect(404)));
+                    request(server.app).get(`/${repo}/author/asd`).expect(404));
 
                 it('allows for querying authors by year', async () => {
-                    const app = await getApp();
+                    const { app } = server;
                     await insertAuthors(app);
 
                     const year = 1926;
@@ -130,7 +138,7 @@ describe('app functionality', () => {
                 });
 
                 it('allows for updating author', async () => {
-                    const app = await getApp();
+                    const { app } = server;
                     const [insertedAuthor] = await insertAuthors(app);
 
                     const name = 'alternative name';
@@ -150,14 +158,15 @@ describe('app functionality', () => {
                 });
 
                 it('returns 404 if updated author does not exists', () =>
-                    getApp().then(app =>
-                        request(app).patch(`/${repo}/author/asd`).send({ name: 'asd' }).expect(404),
-                    ));
+                    request(server.app)
+                        .patch(`/${repo}/author/asd`)
+                        .send({ name: 'asd' })
+                        .expect(404));
             });
 
             describe('in book module', () => {
                 it('allows for insering and fetching data', async () => {
-                    const app = await getApp();
+                    const { app } = server;
                     await insertAuthorsAndBooks(app);
 
                     const { books } = await request(app)
@@ -179,7 +188,7 @@ describe('app functionality', () => {
                 });
 
                 it('allows for getting book by id', async () => {
-                    const app = await getApp();
+                    const { app } = server;
                     const [insertedBook] = (await insertAuthorsAndBooks(app)).books;
 
                     const { book } = await request(app)
@@ -190,10 +199,10 @@ describe('app functionality', () => {
                 });
 
                 it('returns 404 if book with id does not exist', () =>
-                    getApp().then(app => request(app).get(`/${repo}/book/asd`).expect(404)));
+                    request(server.app).get(`/${repo}/book/asd`).expect(404));
 
                 it('returns books by authors', async () => {
-                    const app = await getApp();
+                    const { app } = server;
                     const { authors } = await insertAuthorsAndBooks(app);
 
                     const orwellId = authors.find(({ surname }) => surname === 'Orwell')?.id || '';
@@ -218,7 +227,7 @@ describe('app functionality', () => {
                 });
 
                 it('return books by genre', async () => {
-                    const app = await getApp();
+                    const { app } = server;
                     await insertAuthorsAndBooks(app);
 
                     const fantasyBooks = mockBooks.filter(({ genre }) => genre === 'Fantasy');
@@ -242,7 +251,7 @@ describe('app functionality', () => {
                 });
 
                 it('supports pagination', async () => {
-                    const app = await getApp();
+                    const { app } = server;
                     await insertAuthorsAndBooks(app);
 
                     const { books: paginatedBooks } = await request(app)
@@ -254,7 +263,7 @@ describe('app functionality', () => {
                 });
 
                 it('handles invalid pagination', async () => {
-                    const app = await getApp();
+                    const { app } = server;
                     await insertAuthorsAndBooks(app);
 
                     const { books: paginatedBooks } = await request(app)
