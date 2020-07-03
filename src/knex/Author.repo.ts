@@ -51,7 +51,7 @@ export default class AuthorRepository implements IAuthorRepository {
         return newAuthor;
     }
 
-    public async delete(authorId: string): Promise<Author> {
+    public delete(authorId: string): Promise<Author> {
         return this.Authors()
             .where('id', authorId)
             .delete()

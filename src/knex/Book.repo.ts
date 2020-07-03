@@ -6,6 +6,8 @@ import type {
     BookGenre,
 } from '../common/book/Book.models';
 
+import { v4 as uuid } from 'uuid';
+
 import { ServerError } from '../common/errors';
 import { isNumber } from '../common/utils';
 
@@ -16,10 +18,11 @@ export default class BookRepository implements IBookRepository {
 
     public async init(): Promise<BookRepository> {
         await this.knex.schema.createTable('Books', table => {
-            table.uuid('id').notNullable();
+            table.uuid('id').primary().notNullable();
             table.text('title').notNullable();
-            table.text('gener').notNullable();
-            table.foreign('Authors').references('id').inTable('Authors');
+            table.text('genre').notNullable();
+            table.text('author').notNullable();
+            table.foreign('author').references('id').inTable('Authors');
         });
 
         return this;
@@ -39,49 +42,43 @@ export default class BookRepository implements IBookRepository {
         return !!book;
     }
 
-    public async save(book: BookProps): Promise<Book> {
-        const newBook = await this.Books().insert(book).returning('*').first();
+    public save(book: BookProps): Promise<Book> {
+        const bookData = { ...book, id: uuid() };
 
-        // assuming that insertion succeds -> row is returned
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return newBook!;
+        return this.Books()
+            .insert(bookData)
+            .then(() => this.getById(bookData.id));
     }
 
-    public async delete(bookId: string): Promise<Book> {
-        const book = await this.Books().where('id', bookId).delete().returning('*').first();
-
-        if (!book) throw new ServerError('Book not found', 404);
-
-        return book;
+    public delete(bookId: string): Promise<Book> {
+        return this.Books()
+            .where('id', bookId)
+            .delete()
+            .then(() => this.getById(bookId));
     }
 
-    public async update(bookId: string, newBookData: Partial<BookProps>): Promise<Book> {
-        const newBook = await this.Books()
+    public update(bookId: string, newBookData: Partial<BookProps>): Promise<Book> {
+        return this.Books()
             .update(newBookData)
             .where('id', bookId)
-            .returning('*')
-            .first();
-
-        if (!newBook) throw new ServerError('Book not found', 404);
-
-        return newBook;
+            .then(() => this.getById(bookId));
     }
 
     public getBooksByAuthor(authorId: string): Promise<Book[]> {
         return this.Books().select().where('author', authorId);
     }
 
-    public async getBooks(from?: number, count?: number): Promise<Book[]> {
+    public getBooks(from?: number, count?: number): Promise<Book[]> {
         const isPaginationInvalid = count && count < 1;
 
         return isNumber(from) && isNumber(count)
             ? !isPaginationInvalid
                 ? this.Books().select().limit(count).offset(from)
-                : []
+                : Promise.resolve([])
             : this.Books().select();
     }
 
     public getBooksByGenre(genre: BookGenre): Promise<Book[]> {
-        return this.Books().select().where('genre', genre);
+        return this.Books().select().where(this.knex.raw('LOWER("genre") = ?', genre));
     }
 }
