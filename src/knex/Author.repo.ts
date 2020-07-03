@@ -6,16 +6,18 @@ import type {
     AuthorDb,
 } from '../common/author/Author.models';
 
+import { v4 as uuid } from 'uuid';
+
 import { ServerError } from '../common/errors';
 
 export default class AuthorRepository implements IAuthorRepository {
-    private Authors = () => this.knex<AuthorDb>();
+    private Authors = () => this.knex<AuthorDb>('Authors');
 
     constructor(private knex: Knex) {}
 
     public async init(): Promise<AuthorRepository> {
         await this.knex.schema.createTable('Authors', table => {
-            table.uuid('id').primary();
+            table.uuid('id').primary().notNullable();
             table.text('name').notNullable();
             table.text('surname').notNullable();
             table.integer('dateOfBirth').notNullable();
@@ -39,22 +41,21 @@ export default class AuthorRepository implements IAuthorRepository {
     }
 
     public async save(author: AuthorProps): Promise<Author> {
-        const newAuthor = await this.Authors()
-            .insert({ ...author, dateOfBirth: author.dateOfBirth.getTime() })
-            .returning('*')
-            .first();
+        const authorData = AuthorRepository.convertAuthor({ ...author, id: uuid() });
 
-        // assuming that insertion succeds -> row is returned
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return AuthorRepository.hydateAuthor(newAuthor!);
+        const newAuthor = await this.Authors()
+            .insert(authorData)
+            // returning statements are not supported by sqlite :(
+            .then(() => this.getById(authorData.id));
+
+        return newAuthor;
     }
 
     public async delete(authorId: string): Promise<Author> {
-        const author = await this.Authors().where('id', authorId).delete().returning('*').first();
-
-        if (!author) throw new ServerError('Author not found', 404);
-
-        return AuthorRepository.hydateAuthor(author);
+        return this.Authors()
+            .where('id', authorId)
+            .delete()
+            .then(() => this.getById(authorId));
     }
 
     public async update(
@@ -68,11 +69,9 @@ export default class AuthorRepository implements IAuthorRepository {
         const newAuthor = await this.Authors()
             .update(convertedAuthor)
             .where('id', authorId)
-            .returning('*')
-            .first();
-        if (!newAuthor) throw new ServerError('Author not found', 404);
+            .then(() => this.getById(authorId));
 
-        return AuthorRepository.hydateAuthor(newAuthor);
+        return newAuthor;
     }
 
     public async getAllAuthors(): Promise<Author[]> {
@@ -95,6 +94,13 @@ export default class AuthorRepository implements IAuthorRepository {
         return {
             ...author,
             dateOfBirth: new Date(author.dateOfBirth),
+        };
+    }
+
+    private static convertAuthor(author: Author): AuthorDb {
+        return {
+            ...author,
+            dateOfBirth: author.dateOfBirth.getTime(),
         };
     }
 }
