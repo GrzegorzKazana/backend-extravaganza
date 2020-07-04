@@ -13,7 +13,7 @@ import { mockAuthor, mockBooksByAuthor, mockBooks } from './mocks';
     @typescript-eslint/no-unsafe-assignment: 0 */
 
 describe('app functionality', () => {
-    const repos = ['inmemory', 'sqlite', 'knex'];
+    const repos = ['inmemory', 'sqlite', 'knex', 'typeorm'];
 
     let server = new App();
 
