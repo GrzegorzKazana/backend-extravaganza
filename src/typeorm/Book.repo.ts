@@ -8,7 +8,7 @@ import type {
 
 import { v4 as uuid } from 'uuid';
 
-import BookModel from './Book.model';
+import BookModel from './models/Book.model';
 import { ServerError } from '../common/errors';
 import { isNumber } from '../common/utils';
 
@@ -26,7 +26,7 @@ export default class BookRepository implements IBookRepository {
     }
 
     public async exists(bookId: string): Promise<boolean> {
-        const book = await this.getById(bookId);
+        const book = await this.Books.findOne(bookId);
 
         return !!book;
     }

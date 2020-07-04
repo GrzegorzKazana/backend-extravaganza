@@ -1,4 +1,4 @@
-import type { Author as AuthorDto, AuthorDb } from '../common/author/Author.models';
+import type { Author as AuthorDto, AuthorDb } from '../../common/author/Author.models';
 
 import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
 

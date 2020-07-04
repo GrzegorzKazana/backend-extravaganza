@@ -7,7 +7,7 @@ import type {
 
 import { v4 as uuid } from 'uuid';
 
-import AuthorModel from './Author.model';
+import AuthorModel from './models/Author.model';
 import { ServerError } from '../common/errors';
 
 export default class AuthorRepository implements IAuthorRepository {
@@ -24,7 +24,7 @@ export default class AuthorRepository implements IAuthorRepository {
     }
 
     public async exists(authorId: string): Promise<boolean> {
-        const author = await this.getById(authorId);
+        const author = await this.Authors.findOne(authorId);
 
         return !!author;
     }

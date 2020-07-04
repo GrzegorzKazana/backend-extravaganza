@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { createConnection, Connection } from 'typeorm';
 
-import Author from './Author.model';
-import Book from './Book.model';
+import Author from './models/Author.model';
+import Book from './models/Book.model';
 
 export default (): Promise<Connection> =>
     createConnection({

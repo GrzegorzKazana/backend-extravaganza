@@ -1,4 +1,4 @@
-import type { Book as IBook, BookGenre } from '../common/book/Book.models';
+import type { Book as IBook, BookGenre } from '../../common/book/Book.models';
 
 import { Entity, PrimaryColumn, Column, ManyToOne } from 'typeorm';
 

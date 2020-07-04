@@ -35,7 +35,7 @@ export default class AuthorRepository implements IAuthorRepository {
     }
 
     public async exists(authorId: string): Promise<boolean> {
-        const author = await this.getById(authorId);
+        const author = await this.Authors().select().where('id', authorId).first();
 
         return !!author;
     }

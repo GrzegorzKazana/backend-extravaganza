@@ -37,7 +37,7 @@ export default class BookRepository implements IBookRepository {
     }
 
     public async exists(bookId: string): Promise<boolean> {
-        const book = await this.getById(bookId);
+        const book = await this.Books().select().where('id', bookId).first();
 
         return !!book;
     }
