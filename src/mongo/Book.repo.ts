@@ -69,7 +69,7 @@ export default class BookRepository implements IBookRepository {
     }
 
     public async getBooksByGenre(genre: BookGenre): Promise<Book[]> {
-        const books = await this.Books.find({ genre });
+        const books = await this.Books.find({ genre: { $regex: genre, $options: 'i' } });
 
         return books.map(book => book.toDTO());
     }

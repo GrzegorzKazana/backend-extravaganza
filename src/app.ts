@@ -15,6 +15,7 @@ import * as InMem from './inmemory';
 import * as SQLite from './sqlite';
 import * as Knx from './knex';
 import * as TypeORM from './typeorm';
+import * as Mongo from './mongo';
 
 import { BookRepository } from './common/book/Book.models';
 import { AuthorRepository } from './common/author/Author.models';
@@ -49,9 +50,11 @@ export default class App {
         const db = await SQLite.initDb();
         const knex = Knx.initKnex();
         const typeOrm = await TypeORM.initTypeOrm();
+        const mongo = await Mongo.initMongo();
 
         this.teardownCallbacks.push(() => knex.destroy());
         this.teardownCallbacks.push(() => typeOrm.close());
+        this.teardownCallbacks.push(() => mongo.stop());
 
         return {
             inmem: { book: new InMem.BookRepo(), author: new InMem.AuthorRepo() },
@@ -66,6 +69,10 @@ export default class App {
             typeorm: {
                 book: new TypeORM.BookRepo(typeOrm),
                 author: new TypeORM.AuthorRepo(typeOrm),
+            },
+            mongo: {
+                book: new Mongo.BookRepo(Mongo.Book),
+                author: new Mongo.AuthorRepo(Mongo.Author),
             },
         };
     }
@@ -89,10 +96,15 @@ export default class App {
             .use('/book', createBookRouter(createBookController(repos.typeorm.book)))
             .use('/author', createAuthorRouter(createAuthorController(repos.typeorm.author)));
 
+        const mongoRouter = Router()
+            .use('/book', createBookRouter(createBookController(repos.mongo.book)))
+            .use('/author', createAuthorRouter(createAuthorController(repos.mongo.author)));
+
         return Router()
             .use('/inmemory', immemoryRouter)
             .use('/sqlite', sqliteRouter)
             .use('/knex', knexRouter)
-            .use('/typeorm', typeormRouter);
+            .use('/typeorm', typeormRouter)
+            .use('/mongo', mongoRouter);
     }
 }

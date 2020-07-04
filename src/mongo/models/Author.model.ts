@@ -1,4 +1,4 @@
-import type { AuthorProps, Author } from '../../common/author/Author.models';
+import type { AuthorProps, Author as IAuthor } from '../../common/author/Author.models';
 
 import { Schema, model, Document } from 'mongoose';
 
@@ -17,7 +17,7 @@ authorSchema.methods.toDTO = function (this: Document) {
 const Author = model<AuthorType>('Authors', authorSchema);
 
 export interface AuthorType extends Document, AuthorProps {
-    toDTO: () => Author;
+    toDTO: () => IAuthor;
 }
 
 export type AuthorModel = typeof Author;
