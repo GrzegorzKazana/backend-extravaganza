@@ -1,4 +1,4 @@
-import type { Repository } from 'typeorm';
+import type { Connection } from 'typeorm';
 import type {
     BookRepository as IBookRepository,
     Book,
@@ -13,7 +13,9 @@ import { ServerError } from '../common/errors';
 import { isNumber } from '../common/utils';
 
 export default class BookRepository implements IBookRepository {
-    constructor(private Books: Repository<BookModel>) {}
+    private Books = this.connection.getRepository(BookModel);
+
+    constructor(private connection: Connection) {}
 
     public async getById(bookId: string): Promise<Book> {
         const book = await this.Books.findOne(bookId);
@@ -30,7 +32,7 @@ export default class BookRepository implements IBookRepository {
     }
 
     public async save(book: BookProps): Promise<Book> {
-        const newBook = new BookModel({ ...book, id: uuid() });
+        const newBook = BookModel.fromDTO({ ...book, id: uuid() });
 
         await this.Books.insert(newBook);
 

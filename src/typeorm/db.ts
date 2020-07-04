@@ -8,5 +8,6 @@ export default (): Promise<Connection> =>
     createConnection({
         type: 'sqlite',
         database: ':memory:',
+        synchronize: true,
         entities: [Author, Book],
     });

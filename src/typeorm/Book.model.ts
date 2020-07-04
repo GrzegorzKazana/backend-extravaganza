@@ -7,22 +7,21 @@ import Author from './Author.model';
 @Entity()
 export default class Book implements IBook {
     @PrimaryColumn({ nullable: false })
-    id: string;
+    id!: string;
 
     @Column({ nullable: false })
-    title: string;
+    title!: string;
 
     @Column({ nullable: false })
-    genre: BookGenre;
+    genre!: BookGenre;
 
     @ManyToOne(() => Author, author => author.books)
     @Column({ nullable: false })
-    author: string;
+    author!: string;
 
-    constructor({ id, title, genre, author }: IBook) {
-        this.id = id;
-        this.title = title;
-        this.genre = genre;
-        this.author = author;
+    private constructor() {}
+
+    public static fromDTO({ id, title, genre, author }: IBook): Book {
+        return Object.assign(new Book(), { id, title, genre, author });
     }
 }

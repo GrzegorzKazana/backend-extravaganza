@@ -1,4 +1,4 @@
-import type { Repository } from 'typeorm';
+import type { Connection } from 'typeorm';
 import type {
     AuthorRepository as IAuthorRepository,
     Author,
@@ -11,7 +11,9 @@ import AuthorModel from './Author.model';
 import { ServerError } from '../common/errors';
 
 export default class AuthorRepository implements IAuthorRepository {
-    constructor(private Authors: Repository<AuthorModel>) {}
+    private Authors = this.connection.getRepository(AuthorModel);
+
+    constructor(private connection: Connection) {}
 
     public async getById(authorId: string): Promise<Author> {
         const author = await this.Authors.findOne(authorId);
@@ -28,7 +30,7 @@ export default class AuthorRepository implements IAuthorRepository {
     }
 
     public async save(author: AuthorProps): Promise<Author> {
-        const newAuthor = new AuthorModel({ ...author, id: uuid() });
+        const newAuthor = AuthorModel.fromDTO({ ...author, id: uuid() });
 
         await this.Authors.insert(newAuthor);
 

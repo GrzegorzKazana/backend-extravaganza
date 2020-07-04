@@ -16,6 +16,7 @@ import initDb from './config/database';
 import * as InMem from './inmemory';
 import * as SQLite from './sqlite';
 import * as Knx from './knex';
+import * as TypeORM from './typeorm';
 
 import { BookRepository } from './common/book/Book.models';
 import { AuthorRepository } from './common/author/Author.models';
@@ -49,8 +50,10 @@ export default class App {
     private async createRepositories() {
         const db = await initDb();
         const knex = Knx.initKnex();
+        const typeOrm = await TypeORM.initTypeOrm();
 
         this.teardownCallbacks.push(() => knex.destroy());
+        this.teardownCallbacks.push(() => typeOrm.close());
 
         return {
             inmem: { book: new InMem.BookRepo(), author: new InMem.AuthorRepo() },
@@ -61,6 +64,10 @@ export default class App {
             knex: {
                 book: await new Knx.BookRepo(knex).init(),
                 author: await new Knx.AuthorRepo(knex).init(),
+            },
+            typeorm: {
+                book: new TypeORM.BookRepo(typeOrm),
+                author: new TypeORM.AuthorRepo(typeOrm),
             },
         };
     }
@@ -80,9 +87,14 @@ export default class App {
             .use('/book', createBookRouter(createBookController(repos.knex.book)))
             .use('/author', createAuthorRouter(createAuthorController(repos.knex.author)));
 
+        const typeormRouter = Router()
+            .use('/book', createBookRouter(createBookController(repos.typeorm.book)))
+            .use('/author', createAuthorRouter(createAuthorController(repos.typeorm.author)));
+
         return Router()
             .use('/inmemory', immemoryRouter)
             .use('/sqlite', sqliteRouter)
-            .use('/knex', knexRouter);
+            .use('/knex', knexRouter)
+            .use('/typeorm', typeormRouter);
     }
 }

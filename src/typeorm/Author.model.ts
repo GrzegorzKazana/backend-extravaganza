@@ -7,29 +7,23 @@ import Book from './Book.model';
 @Entity()
 export default class Author implements AuthorDb {
     @PrimaryColumn({ nullable: false })
-    id: string;
+    id!: string;
 
     @Column({ nullable: false })
-    name: string;
+    name!: string;
 
     @Column({ nullable: false })
-    surname: string;
+    surname!: string;
 
     @Column({ nullable: false })
-    dateOfBirth: number;
+    dateOfBirth!: number;
 
     @OneToMany(() => Book, book => book.author)
-    @Column()
-    books: Book[] = [];
+    books!: Book[];
 
-    constructor({ id, name, surname, dateOfBirth }: AuthorDto) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.dateOfBirth = dateOfBirth.getTime();
-    }
+    private constructor() {}
 
-    toDTO(): AuthorDto {
+    public toDTO(): AuthorDto {
         const { id, name, surname, dateOfBirth } = this;
 
         return {
@@ -38,5 +32,9 @@ export default class Author implements AuthorDb {
             surname,
             dateOfBirth: new Date(dateOfBirth),
         };
+    }
+
+    public static fromDTO({ id, name, surname, dateOfBirth }: AuthorDto): Author {
+        return Object.assign(new Author(), { id, name, surname, dateOfBirth });
     }
 }
