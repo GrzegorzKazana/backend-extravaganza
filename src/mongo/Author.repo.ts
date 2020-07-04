@@ -1,22 +1,17 @@
-import type { Connection } from 'typeorm';
 import type {
     AuthorRepository as IAuthorRepository,
     Author,
     AuthorProps,
 } from '../common/author/Author.models';
 
-import { v4 as uuid } from 'uuid';
-
-import AuthorModel from './models/Author.model';
+import { AuthorModel } from './models/Author.model';
 import { ServerError } from '../common/errors';
 
 export default class AuthorRepository implements IAuthorRepository {
-    private Authors = this.connection.getRepository(AuthorModel);
-
-    constructor(private connection: Connection) {}
+    constructor(private Authors: AuthorModel) {}
 
     public async getById(authorId: string): Promise<Author> {
-        const author = await this.Authors.findOne(authorId);
+        const author = await this.Authors.findById(authorId);
 
         if (!author) throw new ServerError('Author not found', 404);
 
@@ -24,36 +19,33 @@ export default class AuthorRepository implements IAuthorRepository {
     }
 
     public async exists(authorId: string): Promise<boolean> {
-        const author = await this.Authors.findOne(authorId);
+        const author = await this.Authors.findById(authorId);
 
         return !!author;
     }
 
     public async save(author: AuthorProps): Promise<Author> {
-        const newAuthor = AuthorModel.fromDTO({ ...author, id: uuid() });
-
-        await this.Authors.insert(newAuthor);
+        const newAuthor = await new this.Authors(author).save();
 
         return newAuthor.toDTO();
     }
 
-    public delete(authorId: string): Promise<Author> {
-        return this.Authors.delete(authorId).then(() => this.getById(authorId));
+    public async delete(authorId: string): Promise<Author> {
+        const deletedAuthor = await this.Authors.findByIdAndDelete(authorId);
+
+        if (!deletedAuthor) throw new ServerError('Author not found', 404);
+
+        return deletedAuthor.toDTO();
     }
 
-    public async update(
-        authorId: string,
-        { dateOfBirth, ...restAuthor }: Partial<AuthorProps>,
-    ): Promise<Author> {
-        const convertedAuthor = dateOfBirth
-            ? { ...restAuthor, dateOfBirth: dateOfBirth.getTime() }
-            : restAuthor;
+    public async update(authorId: string, authorData: Partial<AuthorProps>): Promise<Author> {
+        const updatedAuthor = await this.Authors.findByIdAndUpdate(authorId, authorData, {
+            new: true,
+        });
 
-        const newAuthor = await this.Authors.update(authorId, convertedAuthor).then(() =>
-            this.getById(authorId),
-        );
+        if (!updatedAuthor) throw new ServerError('Author not found', 404);
 
-        return newAuthor;
+        return updatedAuthor.toDTO();
     }
 
     public async getAllAuthors(): Promise<Author[]> {
@@ -63,13 +55,9 @@ export default class AuthorRepository implements IAuthorRepository {
     }
 
     public async getAuthorsFromYear(year: number): Promise<Author[]> {
-        const dateStart = new Date(year, 0, 1).getTime();
-        const dateEnd = new Date(year + 1, 0, 1).getTime();
-        const authors = await this.Authors.createQueryBuilder()
-            .where('dateOfBirth > :dateStart')
-            .andWhere('dateOfBirth < :dateEnd')
-            .setParameters({ dateStart, dateEnd })
-            .getMany();
+        const dateStart = new Date(year, 0, 1);
+        const dateEnd = new Date(year + 1, 0, 1);
+        const authors = await this.Authors.find({ dateOfBirth: { $gte: dateStart, $lt: dateEnd } });
 
         return authors.map(author => author.toDTO());
     }

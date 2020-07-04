@@ -1,4 +1,3 @@
-import type { Connection } from 'typeorm';
 import type {
     BookRepository as IBookRepository,
     Book,
@@ -6,65 +5,72 @@ import type {
     BookGenre,
 } from '../common/book/Book.models';
 
-import { v4 as uuid } from 'uuid';
-
-import BookModel from './models/Book.model';
+import { BookModel } from './models/Book.model';
 import { ServerError } from '../common/errors';
 import { isNumber } from '../common/utils';
 
 export default class BookRepository implements IBookRepository {
-    private Books = this.connection.getRepository(BookModel);
-
-    constructor(private connection: Connection) {}
+    constructor(private Books: BookModel) {}
 
     public async getById(bookId: string): Promise<Book> {
-        const book = await this.Books.findOne(bookId);
+        const book = await this.Books.findById(bookId);
 
         if (!book) throw new ServerError('Book not found', 404);
 
-        return book;
+        return book.toDTO();
     }
 
     public async exists(bookId: string): Promise<boolean> {
-        const book = await this.Books.findOne(bookId);
+        const book = await this.Books.findById(bookId);
 
         return !!book;
     }
 
     public async save(book: BookProps): Promise<Book> {
-        const newBook = BookModel.fromDTO({ ...book, id: uuid() });
+        const newBook = await new this.Books(book).save();
 
-        await this.Books.insert(newBook);
-
-        return newBook;
+        return newBook.toDTO();
     }
 
-    public delete(bookId: string): Promise<Book> {
-        return this.Books.delete(bookId).then(() => this.getById(bookId));
+    public async delete(bookId: string): Promise<Book> {
+        const deletedBook = await this.Books.findByIdAndDelete(bookId);
+
+        if (!deletedBook) throw new ServerError('Book not found', 404);
+
+        return deletedBook.toDTO();
     }
 
-    public update(bookId: string, newBookData: Partial<BookProps>): Promise<Book> {
-        return this.Books.update(bookId, newBookData).then(() => this.getById(bookId));
+    public async update(bookId: string, newBookData: Partial<BookProps>): Promise<Book> {
+        const updatedBook = await this.Books.findByIdAndUpdate(bookId, newBookData, {
+            new: true,
+        });
+
+        if (!updatedBook) throw new ServerError('Book not found', 404);
+
+        return updatedBook.toDTO();
     }
 
-    public getBooksByAuthor(authorId: string): Promise<Book[]> {
-        return this.Books.find({ author: authorId });
+    public async getBooksByAuthor(authorId: string): Promise<Book[]> {
+        const books = await this.Books.find({ author: authorId });
+
+        return books.map(book => book.toDTO());
     }
 
-    public getBooks(from?: number, count?: number): Promise<Book[]> {
+    public async getBooks(from?: number, count?: number): Promise<Book[]> {
         const isPaginationInvalid = count && count < 1;
+        if (isNumber(from) && isNumber(count) && isPaginationInvalid) return Promise.resolve([]);
 
-        return isNumber(from) && isNumber(count)
-            ? !isPaginationInvalid
-                ? this.Books.createQueryBuilder().skip(from).take(count).getMany()
-                : Promise.resolve([])
-            : this.Books.find();
+        const books =
+            isNumber(from) && isNumber(count)
+                ? await this.Books.find({}, null, { skip: from, limit: count })
+                : await this.Books.find();
+
+        return books.map(book => book.toDTO());
     }
 
-    public getBooksByGenre(genre: BookGenre): Promise<Book[]> {
-        return this.Books.createQueryBuilder()
-            .where('LOWER("genre") = :genre')
-            .setParameters({ genre })
-            .getMany();
+    public async getBooksByGenre(genre: BookGenre): Promise<Book[]> {
+        const books = await this.Books.find({ genre });
+
+        return books.map(book => book.toDTO());
     }
 }
