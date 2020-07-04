@@ -11,8 +11,6 @@ import createAuthorController from './common/author/Author.controller';
 import createBookRouter from './common/book/Book.router';
 import createBookController from './common/book/Book.controller';
 
-import initDb from './config/database';
-
 import * as InMem from './inmemory';
 import * as SQLite from './sqlite';
 import * as Knx from './knex';
@@ -48,7 +46,7 @@ export default class App {
     }
 
     private async createRepositories() {
-        const db = await initDb();
+        const db = await SQLite.initDb();
         const knex = Knx.initKnex();
         const typeOrm = await TypeORM.initTypeOrm();
 
