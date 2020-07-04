@@ -28,5 +28,11 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': ['error', { functions: false }],
         '@typescript-eslint/explicit-function-return-type': ['off', { allowExpressions: true }],
         '@typescript-eslint/no-empty-function': ['error', { allow: ['constructors'] }],
+        '@typescript-eslint/unbound-method': [
+            'error',
+            {
+                ignoreStatic: true,
+            },
+        ],
     },
 };

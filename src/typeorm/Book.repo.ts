@@ -10,7 +10,7 @@ import { v4 as uuid } from 'uuid';
 
 import BookModel from './models/Book.model';
 import { ServerError } from '../common/errors';
-import { isNumber } from '../common/utils';
+import { isNil } from '../common/utils';
 
 export default class BookRepository implements IBookRepository {
     private Books = this.connection.getRepository(BookModel);
@@ -52,13 +52,13 @@ export default class BookRepository implements IBookRepository {
     }
 
     public getBooks(from?: number, count?: number): Promise<Book[]> {
-        const isPaginationInvalid = count && count < 1;
+        if (isNil(from) || isNil(count)) return this.Books.find();
 
-        return isNumber(from) && isNumber(count)
-            ? !isPaginationInvalid
-                ? this.Books.createQueryBuilder().skip(from).take(count).getMany()
-                : Promise.resolve([])
-            : this.Books.find();
+        const isPaginationInvalid = count < 1;
+
+        return !isPaginationInvalid
+            ? this.Books.createQueryBuilder().skip(from).take(count).getMany()
+            : Promise.resolve([]);
     }
 
     public getBooksByGenre(genre: BookGenre): Promise<Book[]> {

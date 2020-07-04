@@ -9,7 +9,7 @@ import type {
 import { v4 as uuid } from 'uuid';
 
 import { ServerError } from '../common/errors';
-import { isNumber } from '../common/utils';
+import { isNil } from '../common/utils';
 
 export default class BookRepository implements IBookRepository {
     private Books = () => this.knex<Book>('Books');
@@ -69,13 +69,13 @@ export default class BookRepository implements IBookRepository {
     }
 
     public getBooks(from?: number, count?: number): Promise<Book[]> {
-        const isPaginationInvalid = count && count < 1;
+        if (isNil(from) || isNil(count)) return this.Books().select();
 
-        return isNumber(from) && isNumber(count)
-            ? !isPaginationInvalid
-                ? this.Books().select().limit(count).offset(from)
-                : Promise.resolve([])
-            : this.Books().select();
+        const isPaginationInvalid = count < 1;
+
+        return !isPaginationInvalid
+            ? this.Books().select().limit(count).offset(from)
+            : Promise.resolve([]);
     }
 
     public getBooksByGenre(genre: BookGenre): Promise<Book[]> {

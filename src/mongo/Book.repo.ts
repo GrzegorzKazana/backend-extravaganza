@@ -5,9 +5,9 @@ import type {
     BookGenre,
 } from '../common/book/Book.models';
 
-import { BookModel } from './models/Book.model';
+import { BookModel, BooksType } from './models/Book.model';
 import { ServerError } from '../common/errors';
-import { isNumber } from '../common/utils';
+import { isNil } from '../common/utils';
 
 export default class BookRepository implements IBookRepository {
     constructor(private Books: BookModel) {}
@@ -56,21 +56,25 @@ export default class BookRepository implements IBookRepository {
         return books.map(book => book.toDTO());
     }
 
-    public async getBooks(from?: number, count?: number): Promise<Book[]> {
-        const isPaginationInvalid = count && count < 1;
-        if (isNumber(from) && isNumber(count) && isPaginationInvalid) return Promise.resolve([]);
+    public getBooks(from?: number, count?: number): Promise<Book[]> {
+        if (isNil(from) || isNil(count)) return this.Books.find().then(BookRepository.formatBooks);
 
-        const books =
-            isNumber(from) && isNumber(count)
-                ? await this.Books.find({}, null, { skip: from, limit: count })
-                : await this.Books.find();
+        const isPaginationInvalid = count < 1;
 
-        return books.map(book => book.toDTO());
+        return !isPaginationInvalid
+            ? this.Books.find({}, null, { skip: from, limit: count }).then(
+                  BookRepository.formatBooks,
+              )
+            : Promise.resolve([]);
     }
 
     public async getBooksByGenre(genre: BookGenre): Promise<Book[]> {
         const books = await this.Books.find({ genre: { $regex: genre, $options: 'i' } });
 
+        return books.map(book => book.toDTO());
+    }
+
+    private static formatBooks(books: BooksType[]): Book[] {
         return books.map(book => book.toDTO());
     }
 }

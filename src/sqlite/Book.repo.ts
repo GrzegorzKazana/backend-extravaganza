@@ -86,14 +86,13 @@ export default class BookRepository implements IBookRepository {
     }
 
     public async getBooks(from?: number, count?: number): Promise<Book[]> {
-        const isUsingPagination = !isNil(from) && !isNil(count);
-        const isPaginationInvalid = count && count < 1;
+        if (isNil(from) || isNil(count)) return this.db.all<Book[]>(SQL`SELECT * FROM Books`);
 
-        return !isUsingPagination
-            ? this.db.all<Book[]>(SQL`SELECT * FROM Books`)
-            : isPaginationInvalid
-            ? []
-            : this.db.all<Book[]>(SQL`SELECT * FROM Books LIMIT ${count} OFFSET ${from}`);
+        const isPaginationInvalid = count < 1;
+
+        return !isPaginationInvalid
+            ? this.db.all<Book[]>(SQL`SELECT * FROM Books LIMIT ${count} OFFSET ${from}`)
+            : [];
     }
 
     public getBooksByGenre(genre: BookGenre): Promise<Book[]> {

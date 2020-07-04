@@ -18,6 +18,4 @@ export const head = <T>(arr: T[]): T | undefined => arr[0];
 export const isPaginationValid = (from: number, to: number): boolean =>
     from >= 0 && to >= 0 && to > from;
 
-export const isNil = (a: unknown): boolean => a === null || a === undefined;
-
-export const isNumber = (a: unknown): a is number => typeof a === 'number';
+export const isNil = (a: unknown): a is null | undefined => a === null || a === undefined;

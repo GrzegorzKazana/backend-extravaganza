@@ -77,7 +77,7 @@ export default class AuthorRepository implements IAuthorRepository {
     public async getAllAuthors(): Promise<Author[]> {
         const authors = await this.Authors().select();
 
-        return authors.map(author => AuthorRepository.hydateAuthor(author));
+        return authors.map(AuthorRepository.hydateAuthor);
     }
 
     public async getAuthorsFromYear(year: number): Promise<Author[]> {
@@ -87,7 +87,7 @@ export default class AuthorRepository implements IAuthorRepository {
             .select()
             .whereBetween('dateOfBirth', [dateStart, dateEnd]);
 
-        return authors.map(author => AuthorRepository.hydateAuthor(author));
+        return authors.map(AuthorRepository.hydateAuthor);
     }
 
     private static hydateAuthor(author: AuthorDb): Author {

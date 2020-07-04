@@ -89,7 +89,7 @@ export default class AuthorRepository implements IAuthorRepository {
     public async getAllAuthors(): Promise<Author[]> {
         const authors = await this.db.all<AuthorDb[]>(SQL`SELECT * FROM Authors`);
 
-        return authors.map(author => AuthorRepository.hydateAuthorDb(author));
+        return authors.map(AuthorRepository.hydateAuthorDb);
     }
 
     public async getAuthorsFromYear(year: number): Promise<Author[]> {
@@ -99,7 +99,7 @@ export default class AuthorRepository implements IAuthorRepository {
             SQL`SELECT * FROM Authors WHERE dateOfBirth > ${dateStart} AND dateOfBirth < ${dateEnd}`,
         );
 
-        return authors.map(author => AuthorRepository.hydateAuthorDb(author));
+        return authors.map(AuthorRepository.hydateAuthorDb);
     }
 
     private static hydateAuthorDb(author: AuthorDb): Author {
