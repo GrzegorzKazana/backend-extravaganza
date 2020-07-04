@@ -29,7 +29,7 @@ export default class Author implements AuthorDb {
         this.dateOfBirth = dateOfBirth.getTime();
     }
 
-    toJSON(): AuthorDto {
+    toDTO(): AuthorDto {
         const { id, name, surname, dateOfBirth } = this;
 
         return {
