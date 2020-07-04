@@ -13,7 +13,8 @@ import { mockAuthor, mockBooksByAuthor, mockBooks } from './mocks';
     @typescript-eslint/no-unsafe-assignment: 0 */
 
 describe('app functionality', () => {
-    const repos = ['inmemory', 'sqlite', 'knex', 'typeorm'];
+    const repos = ['inmemory', 'sqlite', 'knex', 'typeorm', 'mongo'];
+    const randomId = '5f00dc3ab10865ddc45eebf1';
 
     let server = new App();
 
@@ -106,7 +107,7 @@ describe('app functionality', () => {
                 });
 
                 it('return 404 if author with id does not exist', () =>
-                    request(server.app).get(`/${repo}/author/asd`).expect(404));
+                    request(server.app).get(`/${repo}/author/${randomId}`).expect(404));
 
                 it('allows for querying authors by year', async () => {
                     const { app } = server;
@@ -159,7 +160,7 @@ describe('app functionality', () => {
 
                 it('returns 404 if updated author does not exists', () =>
                     request(server.app)
-                        .patch(`/${repo}/author/asd`)
+                        .patch(`/${repo}/author/${randomId}`)
                         .send({ name: 'asd' })
                         .expect(404));
             });
@@ -199,7 +200,7 @@ describe('app functionality', () => {
                 });
 
                 it('returns 404 if book with id does not exist', () =>
-                    request(server.app).get(`/${repo}/book/asd`).expect(404));
+                    request(server.app).get(`/${repo}/book/${randomId}`).expect(404));
 
                 it('returns books by authors', async () => {
                     const { app } = server;
