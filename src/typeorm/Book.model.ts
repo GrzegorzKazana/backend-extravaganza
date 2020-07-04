@@ -25,10 +25,4 @@ export default class Book implements IBook {
         this.genre = genre;
         this.author = author;
     }
-
-    toJSON(): IBook {
-        const { id, title, genre, author } = this;
-
-        return { id, title, genre, author };
-    }
 }
