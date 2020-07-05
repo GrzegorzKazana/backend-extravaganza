@@ -3,7 +3,7 @@ import type { Server } from 'http';
 import express, { Router } from 'express';
 import bodyParser from 'body-parser';
 
-import { serverErrorMiddleware } from './common/errors';
+import { serverErrorMiddleware } from '@/common/errors';
 
 import createAuthorRouter from './common/author/Author.router';
 import createAuthorController from './common/author/Author.controller';

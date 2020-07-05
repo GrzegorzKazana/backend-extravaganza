@@ -7,8 +7,8 @@ import type {
 
 import { v4 as uuid } from 'uuid';
 
-import { ServerError } from '../common/errors';
-import { isPaginationValid } from '../common/utils';
+import { ServerError } from '@/common/errors';
+import { isPaginationValid } from '@/common/utils';
 
 export default class BookRepository implements IBookRepository {
     private books: Map<string, Book> = new Map<string, Book>();

@@ -9,8 +9,8 @@ import type {
 import { v4 as uuid } from 'uuid';
 import SQL from 'sql-template-strings';
 
-import { ServerError } from '../common/errors';
-import { isNil } from '../common/utils';
+import { ServerError } from '@/common/errors';
+import { isNil } from '@/common/utils';
 
 export default class BookRepository implements IBookRepository {
     constructor(private db: Database) {}

@@ -8,9 +8,10 @@ import type {
 
 import { v4 as uuid } from 'uuid';
 
+import { ServerError } from '@/common/errors';
+import { isNil } from '@/common/utils';
+
 import BookModel from './models/Book.model';
-import { ServerError } from '../common/errors';
-import { isNil } from '../common/utils';
 
 export default class BookRepository implements IBookRepository {
     private Books = this.connection.getRepository(BookModel);

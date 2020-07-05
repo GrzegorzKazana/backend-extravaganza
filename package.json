@@ -4,8 +4,11 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "test:common": "jest src/common",
         "test:queries": "jest src/queries-orms-and-stuff",
-        "dev:queries": "ts-node src/queries-orms-and-stuff/index.ts"
+        "test:graphql": "jest src/graphql",
+        "dev:queries": "ts-node src/queries-orms-and-stuff/index.ts",
+        "dev:graphql": "ts-node src/graphql/index.ts"
     },
     "keywords": [],
     "author": "",
@@ -16,6 +19,7 @@
         "compose-middleware": "^5.0.1",
         "express": "^4.17.1",
         "express-validator": "^6.6.0",
+        "graphql": "^15.2.0",
         "knex": "^0.21.1",
         "mongodb-memory-server": "^6.6.1",
         "mongoose": "^5.9.21",

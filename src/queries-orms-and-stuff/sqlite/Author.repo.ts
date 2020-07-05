@@ -9,7 +9,7 @@ import type {
 import { v4 as uuid } from 'uuid';
 import SQL from 'sql-template-strings';
 
-import { ServerError } from '../common/errors';
+import { ServerError } from '@/common/errors';
 
 export default class AuthorRepository implements IAuthorRepository {
     constructor(private db: Database) {}

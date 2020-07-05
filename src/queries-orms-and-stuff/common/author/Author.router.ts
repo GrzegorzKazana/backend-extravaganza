@@ -3,7 +3,7 @@ import type { AuthorController } from './Author.controller';
 import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 
-import { createPayloadGuards, createRouteIgnore } from '../guards';
+import { createPayloadGuards, createRouteIgnore } from '@/common/guards';
 
 const validators = createPayloadGuards({
     getAuthor: [param('authorId').isString()],

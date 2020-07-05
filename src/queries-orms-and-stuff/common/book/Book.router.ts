@@ -3,7 +3,7 @@ import type { BookController } from './Book.controller';
 import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 
-import { createPayloadGuards, createRouteIgnore } from '../guards';
+import { createPayloadGuards, createRouteIgnore } from '@/common/guards';
 import { BookGenres, BookGenreRegex } from './Book.models';
 
 const validators = createPayloadGuards({
