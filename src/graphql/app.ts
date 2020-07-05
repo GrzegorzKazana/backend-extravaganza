@@ -22,6 +22,13 @@ export default class App {
     }
 
     private createRouter(): Router {
-        return Router().use('/schema-first', graphqlHTTP({ schema: sch.default, graphiql: true }));
+        return Router().use(
+            '/schema-first',
+            graphqlHTTP({
+                schema: sch.default,
+                graphiql: true,
+                context: { books: {}, authors: {} },
+            }),
+        );
     }
 }

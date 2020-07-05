@@ -1,8 +1,7 @@
 export const BookGenres = {
-    scifi: 'Science Fiction',
-    novel: 'Novel',
-    horror: 'Horror',
-    fantasy: 'Fantasy',
+    novel: 'NOVEL',
+    horror: 'HORROR',
+    fantasy: 'FANTASY',
 } as const;
 
 export const BookGenreRegex = new RegExp(`${Object.values(BookGenres).join('|')}`, 'i');
