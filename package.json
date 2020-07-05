@@ -4,8 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "jest",
-        "dev": "ts-node src/index.ts"
+        "test:queries": "jest src/queries-orms-and-stuff",
+        "dev:queries": "ts-node src/queries-orms-and-stuff/index.ts"
     },
     "keywords": [],
     "author": "",
