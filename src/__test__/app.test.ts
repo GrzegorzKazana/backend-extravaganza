@@ -1,14 +1,10 @@
-import type { Author } from '../common/author/Author.models';
-import type { Book, BookProps } from '../common/book/Book.models';
-
 import request from 'supertest';
-import { Express } from 'express';
 
 import App from '../app';
 import { mockAuthor, mockBooksByAuthor, mockBooks } from './mocks';
+import { insertAuthorsToRepo, insertAuthorsAndBooksToRepo } from './helpers';
 
 /* eslint @typescript-eslint/no-unsafe-member-access: 0,
-    @typescript-eslint/unbound-method: 0,
     @typescript-eslint/no-unsafe-return: 0,
     @typescript-eslint/no-unsafe-assignment: 0 */
 
@@ -23,49 +19,14 @@ describe('app functionality', () => {
             server = app;
         }),
     );
+
     afterEach(() => server.teardown());
 
     repos.forEach(repo => {
+        const insertAuthors = insertAuthorsToRepo(repo);
+        const insertAuthorsAndBooks = insertAuthorsAndBooksToRepo(repo);
+
         describe(`with '${repo}' used as repository`, () => {
-            const insertAuthors = (app: Express): Promise<Author[]> =>
-                Promise.all(
-                    mockAuthor.map(author =>
-                        request(app)
-                            .post(`/${repo}/author`)
-                            .send({
-                                ...author,
-                                dateOfBirth: author.dateOfBirth.toISOString().substr(0, 10),
-                            })
-                            .then(({ body }) => body.author),
-                    ),
-                );
-
-            const insertBook = (app: Express) => (book: BookProps): Promise<Book> =>
-                request(app)
-                    .post(`/${repo}/book`)
-                    .send(book)
-                    .then(({ body }) => body.book);
-
-            const insertBooksByAuthor = (app: Express) => (
-                author: Author,
-                books: BookProps[],
-            ): Promise<Book[]> =>
-                Promise.all(books.map(book => insertBook(app)({ ...book, author: author.id })));
-
-            const insertAuthorsAndBooks = (
-                app: Express,
-            ): Promise<{ books: Book[]; authors: Author[] }> =>
-                insertAuthors(app).then(authors =>
-                    Promise.all(
-                        authors.map(author =>
-                            insertBooksByAuthor(app)(author, mockBooksByAuthor[author.surname]),
-                        ),
-                    ).then(booksNested => ({
-                        authors,
-                        books: ([] as Book[]).concat(...booksNested),
-                    })),
-                );
-
             describe('in author module', () => {
                 it('allows for data insertion', async () => {
                     const { app } = server;
