@@ -2,8 +2,11 @@ import type { Server } from 'http';
 
 import express, { Router } from 'express';
 import bodyParser from 'body-parser';
+import { graphqlHTTP } from 'express-graphql';
 
 import { serverErrorMiddleware } from '@/common/errors';
+
+import * as sch from './schema-first';
 
 export default class App {
     public app = express();
@@ -19,6 +22,6 @@ export default class App {
     }
 
     private createRouter(): Router {
-        return Router();
+        return Router().use('/schema-first', graphqlHTTP({ schema: sch.default, graphiql: true }));
     }
 }
