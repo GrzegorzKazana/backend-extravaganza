@@ -4,6 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "test": "jest",
         "test:common": "jest src/common",
         "test:queries": "jest src/queries-orms-and-stuff",
         "test:graphql": "jest src/graphql",
