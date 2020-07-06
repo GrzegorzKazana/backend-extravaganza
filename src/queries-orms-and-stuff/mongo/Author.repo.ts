@@ -4,8 +4,9 @@ import type {
     AuthorProps,
 } from '../common/author/Author.models';
 
+import { ServerError } from '@/common/errors';
+
 import { AuthorModel } from './models/Author.model';
-import { ServerError } from '../common/errors';
 
 export default class AuthorRepository implements IAuthorRepository {
     constructor(private Authors: AuthorModel) {}

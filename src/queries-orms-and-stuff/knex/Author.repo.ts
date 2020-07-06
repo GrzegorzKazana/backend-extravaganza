@@ -8,7 +8,7 @@ import type {
 
 import { v4 as uuid } from 'uuid';
 
-import { ServerError } from '../common/errors';
+import { ServerError } from '@/common/errors';
 
 export default class AuthorRepository implements IAuthorRepository {
     private Authors = () => this.knex<AuthorDb>('Authors');

@@ -5,9 +5,10 @@ import type {
     BookGenre,
 } from '../common/book/Book.models';
 
+import { ServerError } from '@/common/errors';
+import { isNil } from '@/common/utils';
+
 import { BookModel, BooksType } from './models/Book.model';
-import { ServerError } from '../common/errors';
-import { isNil } from '../common/utils';
 
 export default class BookRepository implements IBookRepository {
     constructor(private Books: BookModel) {}

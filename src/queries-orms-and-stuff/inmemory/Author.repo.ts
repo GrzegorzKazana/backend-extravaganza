@@ -6,7 +6,7 @@ import type {
 
 import { v4 as uuid } from 'uuid';
 
-import { ServerError } from '../common/errors';
+import { ServerError } from '@/common/errors';
 
 export default class AuthorRepository implements IAuthorRepository {
     private authors: Map<string, Author> = new Map<string, Author>();
