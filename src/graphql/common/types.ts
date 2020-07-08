@@ -1,4 +1,5 @@
 export const BookGenres = {
+    scifi: 'SCIFI',
     novel: 'NOVEL',
     horror: 'HORROR',
     fantasy: 'FANTASY',
@@ -29,3 +30,4 @@ export interface Author extends AuthorProps {
 }
 
 export type AuthorDb = Omit<Author, 'dateOfBirth'> & { dateOfBirth: number };
+export type AuthorModel = Omit<Author, 'dateOfBirth'> & { dateOfBirth: string };
