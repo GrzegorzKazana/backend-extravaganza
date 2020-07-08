@@ -8,6 +8,7 @@ import {
     GraphQLString,
     GraphQLList,
     GraphQLInt,
+    GraphQLSchema,
 } from 'graphql';
 import { v4 as uuid } from 'uuid';
 
@@ -82,7 +83,7 @@ const QueryType = new GraphQLObjectType<void, Context>({
                 };
             },
         },
-        auhtors: {
+        authors: {
             type: new GraphQLList(AuthorType),
             resolve: (_, __, { authors }) =>
                 Object.values(authors).map(author => ({
@@ -170,4 +171,9 @@ const MutationType = new GraphQLObjectType<void, Context>({
             },
         },
     }),
+});
+
+export default new GraphQLSchema({
+    query: QueryType,
+    mutation: MutationType,
 });

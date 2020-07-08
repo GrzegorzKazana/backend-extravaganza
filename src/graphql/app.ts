@@ -7,6 +7,7 @@ import { graphqlHTTP } from 'express-graphql';
 import { serverErrorMiddleware } from '@/common/errors';
 
 import * as sch from './schema-first';
+import * as cdf from './code-first';
 
 export default class App {
     public app = express();
@@ -22,13 +23,22 @@ export default class App {
     }
 
     private createRouter(): Router {
-        return Router().use(
-            '/schema-first',
-            graphqlHTTP({
-                schema: sch.default,
-                graphiql: true,
-                context: { books: {}, authors: {} },
-            }),
-        );
+        return Router()
+            .use(
+                '/schema-first',
+                graphqlHTTP({
+                    schema: sch.default,
+                    graphiql: true,
+                    context: { books: {}, authors: {} },
+                }),
+            )
+            .use(
+                '/code-first',
+                graphqlHTTP({
+                    schema: cdf.schema,
+                    graphiql: true,
+                    context: { books: {}, authors: {} },
+                }),
+            );
     }
 }
