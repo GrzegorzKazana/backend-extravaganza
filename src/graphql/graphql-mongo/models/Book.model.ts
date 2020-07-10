@@ -1,4 +1,4 @@
-import type { BookProps, Book as IBook } from '../../common/book/Book.models';
+import type { BookProps, Book as IBook } from '../../common/types';
 
 import { Schema, model, Document } from 'mongoose';
 
