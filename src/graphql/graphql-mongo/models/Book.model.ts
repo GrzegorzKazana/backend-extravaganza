@@ -1,4 +1,4 @@
-import type { BookProps, Book as IBook } from '../../common/book/Book.models';
+import type { BookProps, Book as IBook } from '../../common/types';
 
 import { Schema, model, Document } from 'mongoose';
 
@@ -14,9 +14,10 @@ bookSchema.methods.toDTO = function (this: Document) {
     return normalize<BookProps>(this.toObject());
 };
 
-const Book = model<BooksType>('Books', bookSchema);
+const Book = model<BookType>('Books', bookSchema);
 
-export interface BooksType extends Document, BookProps {
+export interface BookType extends Document, BookProps {
+    readonly id: string;
     toDTO: () => IBook;
 }
 

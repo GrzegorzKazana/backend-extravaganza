@@ -1,0 +1,19 @@
+overwrite: true
+schema: ./src/graphql/schema-first/schema.ts
+require:
+    - ts-node/register/transpile-only
+documents: null
+generates:
+    src/graphql/graphql-mongo/generated/types.ts:
+        plugins:
+            - add:
+                  content:
+                      - '/* eslint-disable */'
+                      - '/** DO NOT MODIFY MANUALLY, CHANGE GQL SCHEMA AND REGENERATE TYPES INSTEAD **/'
+            - 'typescript'
+            - 'typescript-resolvers'
+        config:
+            mapperTypeSuffix: Db
+            mappers:
+                Author: ../models/Author.model#AuthorType
+                Book: ../models/Book.model#BookType

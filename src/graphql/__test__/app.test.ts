@@ -10,14 +10,18 @@ import { insertAuthorsToEndpoint, insertAuthorsAndBooksToEndpoint, queries } fro
     @typescript-eslint/unbound-method: 0 */
 
 describe('graphql functionality', () => {
-    const endpoints = ['schema-first', 'code-first'];
+    const endpoints = ['schema-first', 'code-first', 'mongo-gql'];
     const randomId = '5f00dc3ab10865ddc45eebf1';
 
     let server = new App();
 
-    beforeEach(() => {
-        server = new App();
-    });
+    beforeEach(() =>
+        new App().init().then(app => {
+            server = app;
+        }),
+    );
+
+    afterEach(() => server.teardown());
 
     endpoints.forEach(endpoint => {
         const insertAuthors = insertAuthorsToEndpoint(endpoint);
