@@ -20,7 +20,7 @@ const authorResolver: AuthorResolvers<Context> = {
 
 const bookResolver: BookResolvers<Context> = {
     author: async ({ author: id }, _, { Authors }) => {
-        const author = await Authors.findById(id);
+        const author = await Authors.load(id);
         if (!author) throw new Error('Author not found');
 
         return author;
@@ -29,7 +29,7 @@ const bookResolver: BookResolvers<Context> = {
 
 const queryResolver: QueryResolvers<Context> = {
     author: async (_, { id }, { Authors }) => {
-        const author = await Authors.findById(id);
+        const author = await Authors.load(id);
         if (!author) throw new Error('Author not found');
 
         return author;
@@ -45,7 +45,7 @@ const queryResolver: QueryResolvers<Context> = {
     },
 
     book: async (_, { id }, { Books }) => {
-        const book = await Books.findById(id);
+        const book = await Books.load(id);
         if (!book) throw new Error('Book not found');
 
         return book;
