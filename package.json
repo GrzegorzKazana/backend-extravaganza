@@ -10,7 +10,8 @@
         "test:graphql": "jest src/graphql",
         "dev:queries": "ts-node -r tsconfig-paths/register src/queries-orms-and-stuff/index.ts",
         "dev:graphql": "ts-node -r tsconfig-paths/register --ignore 'node_modules/(?!express-graphql)' src/graphql/index.ts",
-        "gen:schema-types": "graphql-codegen --config codegen.yml"
+        "gen:schema-resolver-types": "graphql-codegen --config src/graphql/schema-first/codegen.yml",
+        "gen:mongo-resolver-types": "graphql-codegen --config src/graphql/graphql-mongo/codegen.yml"
     },
     "keywords": [],
     "author": "",
