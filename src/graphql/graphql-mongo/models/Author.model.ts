@@ -17,6 +17,7 @@ authorSchema.methods.toDTO = function (this: Document) {
 const Author = model<AuthorType>('Authors', authorSchema);
 
 export interface AuthorType extends Document, AuthorProps {
+    readonly id: string;
     toDTO: () => IAuthor;
 }
 

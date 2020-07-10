@@ -1,8 +1,8 @@
 /* eslint-disable */
 /** DO NOT MODIFY MANUALLY, CHANGE GQL SCHEMA AND REGENERATE TYPES INSTEAD **/
 import { GraphQLResolveInfo } from 'graphql';
-import { AuthorModel as AuthorModelDb } from '../models/Author.model';
-import { BookModel as BookModelDb } from '../models/Book.model';
+import { AuthorType as AuthorTypeDb } from '../models/Author.model';
+import { BookType as BookTypeDb } from '../models/Book.model';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -169,10 +169,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   BookGenre: BookGenre;
-  Author: ResolverTypeWrapper<AuthorModelDb>;
+  Author: ResolverTypeWrapper<AuthorTypeDb>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  Book: ResolverTypeWrapper<BookModelDb>;
+  Book: ResolverTypeWrapper<BookTypeDb>;
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -181,10 +181,10 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Author: AuthorModelDb;
+  Author: AuthorTypeDb;
   ID: Scalars['ID'];
   String: Scalars['String'];
-  Book: BookModelDb;
+  Book: BookTypeDb;
   Query: {};
   Int: Scalars['Int'];
   Mutation: {};

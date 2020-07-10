@@ -15,5 +15,5 @@ generates:
         config:
             mapperTypeSuffix: Db
             mappers:
-                Author: ../models/Author.model#AuthorModel
-                Book: ../models/Book.model#BookModel
+                Author: ../models/Author.model#AuthorType
+                Book: ../models/Book.model#BookType
