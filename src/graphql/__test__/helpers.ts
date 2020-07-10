@@ -58,6 +58,7 @@ const insertBookToEndpoint = (baseUrl: string) => (app: Express) => (
             query: mutations.createBook,
             variables: book,
         })
+
         .then(({ body }) => body.data.createBook);
 
 const insertBooksByAuthorToEndpoint = (baseUrl: string) => (app: Express) => (

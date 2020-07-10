@@ -5,6 +5,13 @@ export const BookGenres = {
     fantasy: 'FANTASY',
 } as const;
 
+export enum BookGenresEnum {
+    SCIFI = 'SCIFI',
+    NOVEL = 'NOVEL',
+    HORROR = 'HORROR',
+    FANTASY = 'FANTASY',
+}
+
 export const BookGenreRegex = new RegExp(`${Object.values(BookGenres).join('|')}`, 'i');
 
 export type BookGenre = typeof BookGenres[keyof typeof BookGenres];
@@ -13,6 +20,12 @@ export interface BookProps {
     title: string;
     author: string;
     genre: BookGenre;
+}
+
+export interface BookPropsEnum {
+    title: string;
+    author: string;
+    genre: BookGenresEnum;
 }
 
 export interface Book extends BookProps {
