@@ -14,7 +14,7 @@ authorSchema.methods.toDTO = function (this: Document) {
     return normalize<AuthorProps>(this.toObject());
 };
 
-const Author = model<AuthorType>('Authors', authorSchema);
+const Author = model<AuthorType>('Author', authorSchema);
 
 export interface AuthorType extends Document, AuthorProps {
     readonly id: string;

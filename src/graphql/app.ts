@@ -9,6 +9,7 @@ import { serverErrorMiddleware } from '@/common/errors';
 import * as sch from './schema-first';
 import * as cdf from './code-first';
 import * as mongoGql from './graphql-mongo';
+import * as typeGql from './type-graphql-mongo';
 
 export default class App {
     public app = express();
@@ -16,18 +17,13 @@ export default class App {
     // required for proper teardown, e.g. in tests
     private teardownCallbacks: Array<() => Promise<void>> = [];
 
-    constructor(private port: number = 400) {
-        this.app.use(bodyParser.json());
-        this.app.use('/', this.createRouter());
-        this.app.use(serverErrorMiddleware);
-    }
+    constructor(private port: number = 400) {}
 
     public async init(): Promise<App> {
-        const mongo = await mongoGql.initMongo();
-        this.teardownCallbacks.push(() => mongo.stop());
+        const router = await this.createRouter();
 
         this.app.use(bodyParser.json());
-        this.app.use('/', this.createRouter());
+        this.app.use('/', router);
         this.app.use(serverErrorMiddleware);
 
         return this;
@@ -41,7 +37,10 @@ export default class App {
         return Promise.all(this.teardownCallbacks.map(cb => cb()));
     }
 
-    private createRouter(): Router {
+    private async createRouter(): Promise<Router> {
+        const mongo = await mongoGql.initMongo();
+        this.teardownCallbacks.push(() => mongo.stop());
+
         return Router()
             .use(
                 '/schema-first',
@@ -65,6 +64,14 @@ export default class App {
                     schema: mongoGql.default,
                     graphiql: true,
                     context: { Books: mongoGql.Book, Authors: mongoGql.Author },
+                }),
+            )
+            .use(
+                '/type-gql',
+                graphqlHTTP({
+                    schema: typeGql.default,
+                    graphiql: true,
+                    context: { Books: typeGql.Book, Authors: typeGql.Author },
                 }),
             );
     }

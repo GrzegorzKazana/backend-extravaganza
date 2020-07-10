@@ -4,7 +4,7 @@ import { BookGenresEnum } from '../common/types';
 import { AuthorModel, AuthorType } from './models/Author.model';
 import { BookModel, BookType } from './models/Book.model';
 
-type Context = {
+export type Context = {
     Authors: AuthorModel;
     Books: BookModel;
 };
@@ -16,22 +16,22 @@ registerEnumType(BookGenresEnum, {
 @ObjectType()
 export class Author {
     @Field(() => ID)
-    public id!: string;
+    id!: string;
 
     @Field()
-    public name!: string;
+    name!: string;
 
     @Field()
-    public surname!: string;
+    surname!: string;
 
     @Field()
-    public dateOfBirth(@Root() { dateOfBirth }: AuthorType): string {
+    dateOfBirth(@Root() { dateOfBirth }: AuthorType): string {
         return dateOfBirth.toISOString();
     }
 
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     @Field(() => [Book])
-    public books(@Root() { id }: AuthorType, @Ctx() { Books }: Context): Promise<BookType[]> {
+    books(@Root() { id }: AuthorType, @Ctx() { Books }: Context): Promise<BookType[]> {
         return Books.find({ author: id }).exec();
     }
 }
@@ -39,16 +39,16 @@ export class Author {
 @ObjectType()
 export class Book {
     @Field(() => ID)
-    public id!: string;
+    id!: string;
 
     @Field()
-    public title!: string;
+    title!: string;
 
-    @Field()
-    public genre!: BookGenresEnum;
+    @Field(() => BookGenresEnum)
+    genre!: BookGenresEnum;
 
-    @Field()
-    public async author(
+    @Field(() => Author)
+    async author(
         @Root() { author: id }: BookType,
         @Ctx() { Authors }: Context,
     ): Promise<AuthorType> {

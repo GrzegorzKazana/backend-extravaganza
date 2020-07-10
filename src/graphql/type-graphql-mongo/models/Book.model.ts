@@ -14,7 +14,7 @@ bookSchema.methods.toDTO = function (this: Document) {
     return normalize<BookProps>(this.toObject());
 };
 
-const Book = model<BookType>('Books', bookSchema);
+const Book = model<BookType>('Book', bookSchema);
 
 export interface BookType extends Document, BookProps {
     readonly id: string;

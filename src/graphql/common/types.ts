@@ -6,10 +6,10 @@ export const BookGenres = {
 } as const;
 
 export enum BookGenresEnum {
-    scifi = 'SCIFI',
-    novel = 'NOVEL',
-    horror = 'HORROR',
-    fantasy = 'FANTASY',
+    SCIFI = 'SCIFI',
+    NOVEL = 'NOVEL',
+    HORROR = 'HORROR',
+    FANTASY = 'FANTASY',
 }
 
 export const BookGenreRegex = new RegExp(`${Object.values(BookGenres).join('|')}`, 'i');
