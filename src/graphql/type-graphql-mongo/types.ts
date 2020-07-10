@@ -52,7 +52,7 @@ export class Book {
         @Root() { author: id }: BookType,
         @Ctx() { Authors }: Context,
     ): Promise<AuthorType> {
-        const author = await Authors.findById(id).exec();
+        const author = await Authors.load(id);
         if (!author) throw new Error('Author not found');
 
         return author;

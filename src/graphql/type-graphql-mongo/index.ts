@@ -10,5 +10,4 @@ export { default as Book } from './models/Book.model';
 
 export default buildSchemaSync({
     resolvers: [AuthorResolver, BookResolver],
-    emitSchemaFile: true,
 });

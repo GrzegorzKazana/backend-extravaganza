@@ -12,7 +12,7 @@ export class AuthorResolver {
         @Arg('id', () => ID) id: string,
         @Ctx() { Authors }: Context,
     ): Promise<AuthorType> {
-        const author = await Authors.findById(id);
+        const author = await Authors.load(id);
         if (!author) throw new Error('Author not found');
 
         return author;
@@ -49,7 +49,7 @@ export class AuthorResolver {
 export class BookResolver {
     @Query(() => Book, { nullable: true })
     async book(@Arg('id', () => ID) id: string, @Ctx() { Books }: Context): Promise<BookType> {
-        const book = await Books.findById(id);
+        const book = await Books.load(id);
         if (!book) throw new Error('Book not found');
 
         return book;
