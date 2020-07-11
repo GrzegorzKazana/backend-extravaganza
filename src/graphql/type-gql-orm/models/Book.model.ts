@@ -3,6 +3,7 @@ import { registerEnumType, ObjectType, Field, ID } from 'type-graphql';
 import { v4 as uuid } from 'uuid';
 
 import { BookGenresEnum } from '@/graphql/common/types';
+import { createTypeOrmDataLoader } from '@/graphql/common/createTypeOrmDataLoader';
 
 import Author from './Author.model';
 
@@ -13,6 +14,8 @@ registerEnumType(BookGenresEnum, {
 @ObjectType()
 @Entity()
 export default class Book extends BaseEntity {
+    private static loader = createTypeOrmDataLoader(Book, ({ id }) => id);
+
     @Field(() => ID)
     @PrimaryColumn({ nullable: false })
     id!: string;
@@ -40,5 +43,9 @@ export default class Book extends BaseEntity {
         author: string;
     }): Book {
         return Object.assign(new Book(), { id: uuid(), title, genre, author });
+    }
+
+    static load(id: string): Promise<Book | undefined> {
+        return Book.loader.load(id);
     }
 }

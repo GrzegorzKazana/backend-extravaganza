@@ -9,7 +9,7 @@ import Book from '../models/Book.model';
 export default class BookResolver {
     @FieldResolver()
     async author(@Root() { author: id }: Book): Promise<Author> {
-        const author = await Author.findOne(id);
+        const author = await Author.load(id);
         if (!author) throw new Error('Author not found');
 
         return author;
@@ -17,7 +17,7 @@ export default class BookResolver {
 
     @Query(() => Book, { nullable: true })
     async book(@Arg('id', () => ID) id: string): Promise<Book> {
-        const book = await Book.findOne(id);
+        const book = await Book.load(id);
         if (!book) throw new Error('Book not found');
 
         return book;

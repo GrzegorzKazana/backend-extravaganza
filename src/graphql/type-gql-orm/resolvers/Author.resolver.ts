@@ -12,7 +12,7 @@ export default class AuthorResolver {
 
     @Query(() => Author, { nullable: true })
     async author(@Arg('id', () => ID) id: string): Promise<Author> {
-        const author = await Author.findOne(id);
+        const author = await Author.load(id);
         if (!author) throw new Error('Author not found');
 
         return author;

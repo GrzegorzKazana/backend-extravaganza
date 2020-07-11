@@ -2,13 +2,15 @@ import { BaseEntity, Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field, ID } from 'type-graphql';
 import { v4 as uuid } from 'uuid';
 
-import { BookGenresEnum } from '@/graphql/common/types';
+import { createTypeOrmDataLoader } from '@/graphql/common/createTypeOrmDataLoader';
 
 import Book from './Book.model';
 
 @ObjectType()
 @Entity()
 export default class Author extends BaseEntity {
+    private static loader = createTypeOrmDataLoader(Author, ({ id }) => id);
+
     @Field(() => ID)
     @PrimaryColumn({ nullable: false })
     id!: string;
@@ -39,5 +41,9 @@ export default class Author extends BaseEntity {
         dateOfBirth: string;
     }): Author {
         return Object.assign(new Author(), { id: uuid(), name, surname, dateOfBirth });
+    }
+
+    static load(id: string): Promise<Author | undefined> {
+        return Author.loader.load(id);
     }
 }
