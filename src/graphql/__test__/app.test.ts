@@ -10,7 +10,7 @@ import { insertAuthorsToEndpoint, insertAuthorsAndBooksToEndpoint, queries } fro
     @typescript-eslint/unbound-method: 0 */
 
 describe('graphql functionality', () => {
-    const endpoints = ['schema-first', 'code-first', 'mongo-gql', 'type-gql'];
+    const endpoints = ['schema-first', 'code-first', 'mongo-gql', 'type-gql', 'type-gql-orm'];
     const randomId = '5f00dc3ab10865ddc45eebf1';
 
     let server = new App();

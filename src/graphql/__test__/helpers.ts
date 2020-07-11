@@ -41,7 +41,7 @@ const insertAuthorToEndpoint = (baseUrl: string) => (app: Express) => (
             query: mutations.createAuthor,
             variables: {
                 ...author,
-                dateOfBirth: author.dateOfBirth.toISOString().substr(0, 10),
+                dateOfBirth: author.dateOfBirth.toISOString(),
             },
         })
         .then(({ body }) => body.data.createAuthor);
