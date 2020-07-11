@@ -6,4 +6,4 @@ const app = new App(port);
 app.init()
     .then(app => app.listen())
     .then(() => console.log(`Server running on port ${port}`))
-    .catch(() => console.log('Failed to initialize the app'));
+    .catch(err => console.log(`Failed to initialize the app: ${String(err)}`));

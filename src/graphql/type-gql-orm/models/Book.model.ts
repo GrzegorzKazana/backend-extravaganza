@@ -22,10 +22,10 @@ export default class Book extends BaseEntity {
     title!: string;
 
     @Field(() => BookGenresEnum)
-    @Column('string', { nullable: false })
+    @Column('varchar', { nullable: false })
     genre!: BookGenresEnum;
 
-    @Field()
+    @Field(() => Author)
     @Column({ nullable: false })
     @ManyToOne(() => Author, author => author.books)
     author!: string;

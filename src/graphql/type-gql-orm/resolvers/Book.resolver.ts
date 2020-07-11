@@ -16,7 +16,7 @@ export default class BookResolver {
     }
 
     @Query(() => Book, { nullable: true })
-    async book(@Arg('id') id: string): Promise<Book> {
+    async book(@Arg('id', () => ID) id: string): Promise<Book> {
         const book = await Book.findOne(id);
         if (!book) throw new Error('Book not found');
 

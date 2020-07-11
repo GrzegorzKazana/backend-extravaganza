@@ -22,8 +22,8 @@ export default class Author extends BaseEntity {
     surname!: string;
 
     @Field()
-    @Column({ type: 'enum', enum: BookGenresEnum, nullable: false })
-    dateOfBirth!: BookGenresEnum;
+    @Column({ nullable: false })
+    dateOfBirth!: string;
 
     @Field(() => [Book])
     @OneToMany(() => Book, book => book.author)

@@ -25,8 +25,8 @@ export default class AuthorResolver {
 
     @Query(() => [Author])
     authorsByYear(@Arg('year', () => Int) year: number): Promise<Author[]> {
-        const dateStart = new Date(year, 0, 1);
-        const dateEnd = new Date(year + 1, 0, 1);
+        const dateStart = new Date(year, 0, 1).toISOString();
+        const dateEnd = new Date(year + 1, 0, 1).toISOString();
 
         return Author.createQueryBuilder()
             .where('dateOfBirth > :dateStart')
