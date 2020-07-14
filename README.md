@@ -1,6 +1,6 @@
 # backend-extravaganza
 
-Repo for playing with different node.js technologies using _typescript_.
+Repo for playing with different node.js technologies using _typescript_. This is by no means complete, more stuff hopefully coming soon.
 
 ### Topics
 
